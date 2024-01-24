@@ -152,6 +152,13 @@
             // 移除嵌入的网页（清空容器内容）
             document.getElementById("embeddedBrowser").innerHTML = "";
         }
+
+        // 在用户即将离开页面时触发断开连接
+        window.addEventListener('beforeunload', function (event) {
+            if (isConnected) {
+                disconnect();
+            }
+        });
     </script>
 </body>
 

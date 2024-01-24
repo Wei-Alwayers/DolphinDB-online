@@ -6,8 +6,20 @@ import random
 import subprocess
 import time
 import webbrowser
+import configparser
 
 app = FastAPI()
+
+# 读取配置文件
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+# 从配置文件中获取值
+cpu_limit = config.getfloat('container', 'cpu_limit')
+memory_limit = config.get('container', 'memory_limit')
+port_range_start = config.getint('container', 'port_range_start')
+port_range_end = config.getint('container', 'port_range_end')
+cpuset_cpus = config.get('container', 'cpuset_cpus')
 
 # 添加 CORS 中间件
 app.add_middleware(
@@ -37,7 +49,7 @@ class DisconnectRequest(BaseModel):
 # 创建新容器
 def create_new_container():
     while True:
-        random_port = random.randint(9000, 9999)
+        random_port = random.randint(port_range_start, port_range_end)
         if random_port not in [container["port"] for container in connected_containers]:
             break
 
@@ -45,10 +57,6 @@ def create_new_container():
     new_host_name = f"host{random_port}"
 
     # 添加资源限制
-    # TO DO:：限制其他资源
-    cpu_limit = "0.5"  # 限制使用的 CPU 核心数为 0.5
-    memory_limit = "512m"  # 限制使用的内存量为 512MB
-
     subprocess.run(
         [
             "docker",
@@ -63,15 +71,17 @@ def create_new_container():
             "-v",
             "/etc:/dolphindb/etc",
             "--cpus",
-            cpu_limit,
+            str(cpu_limit),  # 使用配置中的cpu_limit值
             "--memory",
-            memory_limit,
+            memory_limit,  # 使用配置中的memory_limit值
+            "--cpuset-cpus",
+            str(cpuset_cpus),  # 使用配置中的cpuset_cpus值
             "dolphindb/dolphindb:v2.00.10",
             "sh",
         ]
     )
     connected_containers.append({"name": new_container_name, "port": random_port})
-    print(f" new_container_name: { new_container_name}")
+    print(f"new_container_name: {new_container_name}")
     print(f"random_port: {random_port}")
     return new_container_name, random_port
 
