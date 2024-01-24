@@ -1,25 +1,27 @@
-from fastapi import FastAPI, Depends, HTTPException
+import datetime
+import time
+from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import random
 import subprocess
-import time
 import webbrowser
 import configparser
+from apscheduler.schedulers.background import BackgroundScheduler
 
 app = FastAPI()
 
 # 读取配置文件
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 
 # 从配置文件中获取值
-cpu_limit = config.getfloat('container', 'cpu_limit')
-memory_limit = config.get('container', 'memory_limit')
-port_range_start = config.getint('container', 'port_range_start')
-port_range_end = config.getint('container', 'port_range_end')
-cpuset_cpus = config.get('container', 'cpuset_cpus')
+cpu_limit = config.getfloat("container", "cpu_limit")
+memory_limit = config.get("container", "memory_limit")
+port_range_start = config.getint("container", "port_range_start")
+port_range_end = config.getint("container", "port_range_end")
+cpuset_cpus = config.get("container", "cpuset_cpus")
 
 # 添加 CORS 中间件
 app.add_middleware(
@@ -31,13 +33,11 @@ app.add_middleware(
 )
 
 # 保存当前连接的容器信息
-# TO DO：限制最大连接
 connected_containers = []
 
 
 # 创建新容器请求的数据模型
 class ConnectRequest(BaseModel):
-    # 可以根据需要添加其他请求参数
     pass
 
 
@@ -80,10 +80,43 @@ def create_new_container():
             "sh",
         ]
     )
-    connected_containers.append({"name": new_container_name, "port": random_port})
+    start_time = time.time()
+    connected_containers.append(
+        {
+            "name": new_container_name,
+            "port": random_port,
+            "start_time": start_time,
+        }
+    )
     print(f"new_container_name: {new_container_name}")
     print(f"random_port: {random_port}")
+    print(f"Current Time: {start_time}")
     return new_container_name, random_port
+
+
+# 断开过期容器
+def disconnect_expired_containers():
+    expiration_time = 20 * 60  # 20 minute in seconds
+    # print("Checking for expired containers")
+
+    current_time = time.time()
+
+    for container in connected_containers[:]:
+        start_time = container.get("start_time", current_time)
+
+        if current_time - start_time > expiration_time:
+            container_name = container["name"]
+            print(f"自动断开连接容器 {container_name}")
+            print(f"Current Time: {current_time}")
+            connected_containers.remove(container)
+            subprocess.run(["docker", "stop", container_name])
+            subprocess.run(["docker", "rm", container_name])
+
+
+# 定时任务调度器
+scheduler = BackgroundScheduler()
+scheduler.add_job(disconnect_expired_containers, "interval", minutes=1)
+scheduler.start()
 
 
 # 用户连接
