@@ -22,6 +22,7 @@ memory_limit = config.get("container", "memory_limit")
 port_range_start = config.getint("container", "port_range_start")
 port_range_end = config.getint("container", "port_range_end")
 cpuset_cpus = config.get("container", "cpuset_cpus")
+image_tag = config.get("container", "image_tag")
 
 # 添加 CORS 中间件
 app.add_middleware(
@@ -76,7 +77,7 @@ def create_new_container():
             memory_limit,  # 使用配置中的memory_limit值
             "--cpuset-cpus",
             str(cpuset_cpus),  # 使用配置中的cpuset_cpus值
-            "dolphindb/dolphindb:v2.00.10",
+            f"dolphindb/dolphindb:{image_tag}",
             "sh",
         ]
     )
@@ -172,5 +173,4 @@ app.add_event_handler("shutdown", shutdown_event)
 
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(app, host="127.0.0.1", port=8000)
