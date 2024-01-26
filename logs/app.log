@@ -1,0 +1,99 @@
+INFO:     Will watch for changes in these directories: ['/home/ecology/DolphinDB-ol/src/back']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [231247] using watchgod
+INFO:     Started server process [231251]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+7e2ad378d38e84e4eb0f62d637ede63e097f11e7de9ae3ec7b59893c22fdf7f9
+new_container_name: dolphindb10738
+random_port: 10738
+Current Time: 1706240319.0057862
+Connected to new container dolphindb10738 on port 10738
+INFO:     125.121.150.77:63085 - "POST /connect HTTP/1.1" 200 OK
+dolphindb10738
+dolphindb10738
+Trying to disconnect from container dolphindb10738
+Connected containers: [{'name': 'dolphindb10738', 'port': 10738, 'start_time': 1706240319.0057862}]
+Disconnected from container dolphindb10738
+INFO:     125.121.150.77:63142 - "POST /disconnect HTTP/1.1" 200 OK
+ca97bf046a9cc05a5ef179fe98a90ac4f6a4511b774622bfb5dee45e5648c07e
+new_container_name: dolphindb10630
+random_port: 10630
+Current Time: 1706240485.4110575
+Connected to new container dolphindb10630 on port 10630
+INFO:     125.121.150.77:63221 - "POST /connect HTTP/1.1" 200 OK
+dolphindb10630
+dolphindb10630
+Trying to disconnect from container dolphindb10630
+Connected containers: [{'name': 'dolphindb10630', 'port': 10630, 'start_time': 1706240485.4110575}]
+Disconnected from container dolphindb10630
+INFO:     125.121.150.77:63246 - "POST /disconnect HTTP/1.1" 200 OK
+514b118404e5af5fb1aceee524beedbbc87b9b57ba67b04bc64543669cdcee26
+new_container_name: dolphindb10047
+random_port: 10047
+Current Time: 1706240529.8787487
+Connected to new container dolphindb10047 on port 10047
+INFO:     125.121.150.77:63261 - "POST /connect HTTP/1.1" 200 OK
+dolphindb10047
+dolphindb10047
+Trying to disconnect from container dolphindb10047
+Connected containers: [{'name': 'dolphindb10047', 'port': 10047, 'start_time': 1706240529.8787487}]
+Disconnected from container dolphindb10047
+INFO:     125.121.150.77:63277 - "POST /disconnect HTTP/1.1" 200 OK
+INFO:     87.236.176.18:56889 - "GET / HTTP/1.1" 404 Not Found
+INFO:     125.121.150.77:52609 - "OPTIONS /connect HTTP/1.1" 200 OK
+f18604a42c82facd9522657f8169749804e54e25a9d5068afb06995b7a32b21e
+new_container_name: dolphindb10911
+random_port: 10911
+Current Time: 1706248092.6328557
+Connected to new container dolphindb10911 on port 10911
+INFO:     125.121.150.77:52609 - "POST /connect HTTP/1.1" 200 OK
+INFO:     125.121.150.77:52645 - "OPTIONS /disconnect HTTP/1.1" 200 OK
+dolphindb10911
+dolphindb10911
+Trying to disconnect from container dolphindb10911
+Connected containers: [{'name': 'dolphindb10911', 'port': 10911, 'start_time': 1706248092.6328557}]
+Disconnected from container dolphindb10911
+INFO:     125.121.150.77:52645 - "POST /disconnect HTTP/1.1" 200 OK
+WARNING:  WatchGodReload detected file change in '['/home/ecology/DolphinDB-ol/src/back/server.py']'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [231251]
+All containers stopped and removed
+INFO:     Started server process [258679]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     125.121.150.77:53683 - "OPTIONS /connect HTTP/1.1" 200 OK
+ca71437a594e27b340b0ee3ab49b45b8a0bfad108c6790512a1092dccf1f43ec
+new_container_name: dolphindb10674
+random_port: 10674
+Current Time: 1706248503.294875
+Connected to new container dolphindb10674 on port 10674
+INFO:     125.121.150.77:53683 - "POST /connect HTTP/1.1" 200 OK
+INFO:     125.121.150.77:53715 - "OPTIONS /disconnect HTTP/1.1" 200 OK
+dolphindb10674
+dolphindb10674
+自动断开连接容器 dolphindb10674
+Current Time: 1706249729.316445
+INFO:     125.121.150.77:50982 - "OPTIONS /connect HTTP/1.1" 200 OK
+5b41e03c414821baee74a4bcd1f7bb9b78a2dee8f0c3bfc428a537191af111b5
+new_container_name: dolphindb10282
+random_port: 10282
+Current Time: 1706251226.1623392
+Connected to new container dolphindb10282 on port 10282
+INFO:     125.121.150.77:50982 - "POST /connect HTTP/1.1" 200 OK
+INFO:     125.121.150.77:50997 - "OPTIONS /disconnect HTTP/1.1" 200 OK
+dolphindb10282
+dolphindb10282
+Trying to disconnect from container dolphindb10282
+Connected containers: [{'name': 'dolphindb10282', 'port': 10282, 'start_time': 1706251226.1623392}]
+Disconnected from container dolphindb10282
+INFO:     125.121.150.77:50997 - "POST /disconnect HTTP/1.1" 200 OK
+INFO:     125.121.150.77:51780 - "OPTIONS /connect HTTP/1.1" 200 OK
+8d61d4223b308d938c33e261fae25fd5e84890b813b3ce572ccc240e80d10fa8
+new_container_name: dolphindb10535
+random_port: 10535
+Current Time: 1706252366.3025165
+Connected to new container dolphindb10535 on port 10535
+INFO:     125.121.150.77:51780 - "POST /connect HTTP/1.1" 200 OK

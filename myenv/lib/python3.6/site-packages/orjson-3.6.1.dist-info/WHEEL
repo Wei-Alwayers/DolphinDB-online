@@ -1,0 +1,4 @@
+Wheel-Version: 1.0
+Generator: maturin (0.11.2)
+Root-Is-Purelib: false
+Tag: cp36-cp36m-manylinux_2_24_x86_64
