@@ -1,10 +1,10 @@
-# DolphinDB在线功能体验
+# DolphinDB Online Feature Experience
 
-## 1 快速开始
+## 1 Quick Start
 
-网页地址：[DolphinDB在线体验](http://183.134.101.143:11001/)
+Website: [DolphinDB Online Experience](http://183.134.101.143:11001/)
 
-## 2 项目结构
+## 2 Project Structure
 
 ```
 /DolphinDB-ol
@@ -24,17 +24,17 @@
         └── scripts.js
 ```
 
-- conf/： 存放配置文件的目录。
-- logs/： 存放日志文件的目录。
-- myenv/： 存放虚拟环境的目录，用于隔离项目的依赖。
-- scripts/： 存放脚本文件的目录。
-- src/： 存放源代码的目录。
-  - back/： 后端代码目录。
-  - fronted/： 前端代码目录。
+- `conf/`: Directory for storing configuration files.
+- `logs/`: Directory for storing log files.
+- `myenv/`: Directory for the virtual environment, used to isolate project dependencies.
+- `scripts/`: Directory for storing script files.
+- `src/`: Directory for storing source code.
+  - `back/`: Backend code directory.
+  - `fronted/`: Frontend code directory.
 
-## 3 配置说明
+## 3 Configuration Instructions
 
-配置文件位于conf/config.ini
+The configuration file is located at `conf/config.ini`.
 
 ```
 [container]
@@ -46,88 +46,98 @@ cpuset_cpus = 0,2,4,6,8,10,12,14,16,18
 image_tag = v2.00.10
 ```
 
-- cpu_limit：每个DolphinDB容器限制CPU核数
-- memory_limit：每个DolphinDB容器限制
-- port_range_start port_range_end：项目使用的端口范围
-- cpuset_cpus：限制容器使用的特定 CPU 核心。
-- image_tag：DolphinDB使用的镜像版本标签，可参考[Docker 官方镜像仓库](https://hub.docker.com/u/dolphindb)
+- `cpu_limit`: Limits the number of CPU cores for each DolphinDB container.
+- `memory_limit`: Limits the memory usage for each DolphinDB container.
+- `port_range_start` and `port_range_end`: Define the range of ports used by the project.
+- `cpuset_cpus`: Restricts containers to specific CPU cores.
+- `image_tag`: Specifies the image version tag for DolphinDB. Refer to the [Docker Official Image Repository](https://hub.docker.com/u/dolphindb) for details.
 
-## 4 设计说明
+## 4 Design Overview
 
-### 4.1 服务端设计
+### 4.1 Server-Side Design
 
-> 服务端代码位于src/back/server.py
+> The server-side code is located at `src/back/server.py`.
 
-**功能概述：**该项目是一个基于 FastAPI 的 Docker 容器管理服务。它允许用户通过 API 请求创建和断开连接到DolphinDB的Docker 容器，同时实现了自动断开过期容器的功能。容器断开时自动终止并销毁容器。
+**Functionality Overview:**  
+This project is a Docker container management service built with FastAPI. It allows users to create and disconnect from DolphinDB Docker containers via API requests, with an automatic mechanism to disconnect and destroy expired containers upon disconnection.
 
-**依赖组件：**
+**Dependencies:**
 
-- FastAPI： 使用 FastAPI 框架构建 Web API。
-- Docker： 利用 Docker 容器来提供可隔离的计算环境。
-- APScheduler**：** 使用 BackgroundScheduler 实现定时任务，自动断开过期容器。
+- **FastAPI:** Used to build the Web API framework.
+- **Docker:** Utilized to provide isolated computing environments with Docker containers.
+- **APScheduler:** Implements scheduled tasks using `BackgroundScheduler` to automatically disconnect expired containers.
 
-**API说明：**
+**API Description:**
 
-- 连接到容器
-  - Endpoint： /connect
-  - Method： POST
-  - 请求体： 无
-  - 响应：{ "status": "connected", "container_name": "", "port":  ""}
-  - 说明： 用户请求连接到容器，系统返回成功连接的容器信息。
-- 断开连接
-  - Endpoint： /disconnect
-  - Method： POST
-  - 请求体：{ "container_name": "dolphindb9001" }
-  - 响应：{ "status": "disconnected", "container_name": "" }
-  - 说明： 用户请求断开连接，系统根据容器名断开连接并停止删除容器。
+- **Connect to a container**
+  - **Endpoint:** `/connect`
+  - **Method:** `POST`
+  - **Request Body:** None
+  - **Response:** `{ "status": "connected", "container_name": "", "port": "" }`
+  - **Description:** Allows users to request a connection to a container. The system returns information about the successfully connected container.
 
-**定时任务：**使用 APScheduler 实现了一个定时任务，每分钟检查连接的容器列表，断开并移除过期容器。
+- **Disconnect from a container**
+  - **Endpoint:** `/disconnect`
+  - **Method:** `POST`
+  - **Request Body:** `{ "container_name": "dolphindb9001" }`
+  - **Response:** `{ "status": "disconnected", "container_name": "" }`
+  - **Description:** Users can request to disconnect. The system stops and removes the specified container by its name.
 
-**启动和关闭：**项目使用 uvicorn 来运行 FastAPI 应用。在服务器关闭时，注册了一个事件处理程序，会关闭并删除所有连接的容器。
+**Scheduled Tasks:**  
+A scheduled task using APScheduler checks the list of connected containers every minute to disconnect and remove expired containers.
 
-### 4.2 客户端设计
+**Startup and Shutdown:**  
+The project uses `uvicorn` to run the FastAPI application. An event handler is registered to close and delete all connected containers upon server shutdown.
 
-> 客户端代码位于src/back，包括index.html style.css main.js，为简单静态页面
+### 4.2 Client-Side Design
 
-**功能概述：**客户端是一个简单的 Web 页面，允许用户通过按钮点击连接到 Docker 容器并在嵌入的网页中进行 DolphinDB 的在线体验。
+> The client-side code is located in `src/back`, including `index.html`, `style.css`, and `main.js`. It is a simple static webpage.
 
-**主要功能：**
+**Functionality Overview:**  
+The client is a basic web page that allows users to connect to Docker containers through button clicks and access the DolphinDB online experience via an embedded webpage.
 
-- 连接到容器
-  - 点击 "Connect" 按钮将向服务器发送连接请求。
-  - 成功连接后，显示连接信息和嵌入 DolphinDB 在线体验页面。
-  - 连接成功后，禁用 "Connect" 按钮并启用 "Disconnect" 按钮。
-- 断开连接
-  - 点击 "Disconnect" 按钮将向服务器发送断开连接请求。
-  - 成功断开连接后，更新连接信息和移除嵌入的 DolphinDB 在线体验页面。
-  - 断开连接后，禁用 "Disconnect" 按钮并启用 "Connect" 按钮。
-- 自动断开
-  - 当用户即将离开页面时，会触发 beforeunload 事件，此时系统会自动调用断开连接函数。
+**Main Features:**
 
-**使用方法：**
+- **Connect to a container**
+  - Clicking the "Connect" button sends a connection request to the server.
+  - Upon successful connection, displays connection information and embeds the DolphinDB online experience page.
+  - Disables the "Connect" button and enables the "Disconnect" button after a successful connection.
 
-1. 打开 index.html 文件。
-2. 点击 "Connect" 按钮连接到 Docker 容器。
-3. 在连接成功后，嵌入 DolphinDB 在线体验页面。
-4. 如果需要断开连接，点击 "Disconnect" 按钮。
+- **Disconnect from a container**
+  - Clicking the "Disconnect" button sends a disconnection request to the server.
+  - Updates connection information and removes the embedded DolphinDB online experience page upon disconnection.
+  - Disables the "Disconnect" button and enables the "Connect" button after disconnection.
 
-## 5 注意事项
+- **Automatic Disconnection**
+  - When the user attempts to leave the page, the `beforeunload` event triggers an automatic disconnection function.
 
-1. **服务端启动：**
+**Usage Instructions:**
+
+1. Open the `index.html` file.
+2. Click the "Connect" button to connect to a Docker container.
+3. Access the DolphinDB online experience page after a successful connection.
+4. If needed, click the "Disconnect" button to disconnect.
+
+## 5 Notes
+
+1. **Server Startup:**
 
    ```
-   # 进入项目目录
+   # Navigate to the project's root directory
    ./scripts/back.sh
    ```
 
-2. **虚拟的python环境：**项目使用到虚拟的python环境myenv，项目依赖的包安装在该虚拟环境中，启动后端服务需要在该环境下。后端启动脚本**back.sh**会自动激活该虚拟环境。如果需要退出虚拟环境，执行
+2. **Virtual Python Environment:**  
+The project uses a virtual Python environment named `myenv`, where all the project's dependencies are installed. To start the backend service, the virtual environment must be activated. The backend startup script **`back.sh`** will automatically activate this virtual environment.  
+If you need to deactivate the virtual environment, execute:
 
 ```
-# 退出虚拟环境
+# deactivate
 $ deactivate
 ```
 
-3. **服务端静态网页部署：**服务端静态界面部署在nginx服务器11001端口上，相关配置如下：
+3. **Server Static Webpage Deployment:**  
+The server's static interface is deployed on an Nginx server at port `11001`. The relevant configuration is as follows:
 
 ```
 # nginx.conf
@@ -142,6 +152,6 @@ server {
 }
 ```
 
-## 6 已知问题
+## 6 Known Issues
 
-1. 在项目最初设计中，用户关闭前端界面，将会给后端发送断开连接请求，停止并删除对应DolphinDB容器。但是由于某些浏览器限制（如chrome），该请求不能正确发送，这将会导致容器在后台一直运行，直到超时（创建20分钟后），服务端将其自动回收。在一些其他浏览器，如edge，则不存在这类问题。
+1. In the initial project design, when the user closes the frontend interface, a disconnect request is sent to the backend to stop and delete the corresponding DolphinDB container. However, due to limitations in some browsers (e.g., Chrome), this request may not be sent correctly, causing the container to continue running in the background until it times out (20 minutes after creation), at which point the server automatically recycles it. This issue does not occur in some other browsers, such as Edge.
